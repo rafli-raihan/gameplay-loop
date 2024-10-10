@@ -29,42 +29,56 @@ class Game {
 
   bool isTimerActive() {
     if (endTime != null) {
-      // Check if current time is before the end time
+      // Check if the current time is before the end time
       return DateTime.now().isBefore(endTime!);
     }
-    return false;
+    return false; // If endTime is null, the timer is not active
+  }
+
+  int getRemainingTime() {
+    if (endTime != null) {
+      // Calculate remaining time by subtracting current time from endTime
+      return endTime!.difference(DateTime.now()).inSeconds;
+    }
+    return 0;
   }
 
   Future gameplayLoop() async {
-
-    String? control;
-
     while (isTimerActive()) {
-      // Core gameplay disini....
-      print('Press "Y" to score a point:');
+      // Stop the loop immediately if the timer is inactive
+      if (!isTimerActive()) {
+        print("Time's up");
+        break;
+      }
+
+      // Display the remaining time
+      print('Remaining time: ${getRemainingTime()} seconds');
+      print('Press "Y" to score a point (or any other key to try again):');
       
       // Wait for the player to input
-      control = stdin.readLineSync();
+      String? control = stdin.readLineSync();
       
       if (control == "Y" || control == "y") {
-      score++;
-      print('You scored! Total points: $score');
-
-      // Add 10 seconds to the timer and restart it
-      timeLimit = timeLimit;
-      startTimer();  // Reset the timer after scoring
+        score++;
+        print('You scored! Total points: $score');
+        
+        // Add 10 seconds to the timer and restart it
+        timeLimit = 10;
+        startTimer();  // Reset the timer after scoring
       } else {
         print("Try again");
       }
+
+      // Add a slight delay for better display of countdown (optional)
+      await Future.delayed(Duration(seconds: 1));
     }
   }
 
   void endGame() {
     isPlaying = false;
     gameTimer?.cancel(); // Cancel the timer
-    print('Final score: $score');
+    print('\nTime\'s up! Final score: $score');
     exit(0); // Exit the program
   }
 }
-
 
