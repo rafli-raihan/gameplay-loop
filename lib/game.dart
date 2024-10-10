@@ -10,7 +10,7 @@ class Game {
 
   Game(this.timeLimit);
 
-  void start() async {
+  Future start() async {
     print('Game started! You have $timeLimit seconds to score as many points as you can.');
 
     // Start the game timer
@@ -35,20 +35,24 @@ class Game {
     return false;
   }
 
-  Future<void> gameplayLoop() async {
+  Future gameplayLoop() async {
+
+    String? control;
+
     while (isTimerActive()) {
+      // Core gameplay disini....
       print('Press "Y" to score a point:');
       
       // Wait for the player to input
-      String? control = stdin.readLineSync();
+      control = stdin.readLineSync();
       
       if (control == "Y" || control == "y") {
-        score++;
-        print('You scored! Total points: $score');
-        
-        // Add 10 seconds to the timer and restart it
-        timeLimit = 10;
-        startTimer();  // Reset the timer after scoring
+      score++;
+      print('You scored! Total points: $score');
+
+      // Add 10 seconds to the timer and restart it
+      timeLimit = timeLimit;
+      startTimer();  // Reset the timer after scoring
       } else {
         print("Try again");
       }
@@ -58,7 +62,7 @@ class Game {
   void endGame() {
     isPlaying = false;
     gameTimer?.cancel(); // Cancel the timer
-    print('\nTime\'s up! Final score: $score');
+    print('Final score: $score');
     exit(0); // Exit the program
   }
 }
